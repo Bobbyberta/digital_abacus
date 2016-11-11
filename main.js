@@ -28,10 +28,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'digital_abacus', {
         this.redBead1.input.enableDrag();
         this.redBead1.input.allowVerticalDrag = false;
 
-
-
-
-
+        
         this.redBead2 = game.add.sprite(55, 50, 'red');
         game.physics.enable(this.redBead2, Phaser.Physics.ARCADE);
         this.redBead2.body.collideWorldBounds = true;
@@ -47,7 +44,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'digital_abacus', {
     update: function(){
 
 
-        game.physics.arcade.overlap(
+        game.physics.arcade.collide(
             this.redBead1,
             this.redBead2,
             function(a, b) {
@@ -63,9 +60,14 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'digital_abacus', {
     },
 
     _collided: function(a, b){
-        console.log('collision!!')
-        this.redBead1.input.disableDrag();
-        this.redBead1.body.velocity =-10;
+        console.log('collision!!');
+
+        if(a.body.touching.right == false){
+            console.log('a touching right');
+        }
+        if(a.body.touching.right == true){
+            console.log('a touching right');
+        }
 
     },
 
