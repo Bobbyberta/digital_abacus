@@ -1,5 +1,7 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'digital_abacus', {
 
+
+
     //for Phaser to run a file it has to contain at least one of these functions
 
     //preload is used at the start to load assets and thins
@@ -18,55 +20,70 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'digital_abacus', {
 
         game.stage.backgroundColor = "#19A3E0";
 
+        this.left = new Phaser.Rectangle(0, 0, 400, 800);
+        this.right = new Phaser.Rectangle(400, 0, 400, 800);
+
         this.addRods();
 
-        this.redBead1 = game.add.sprite(5, 50, 'red');
-        game.physics.enable(this.redBead1, Phaser.Physics.ARCADE);
-        this.redBead1.body.collideWorldBounds = true;
-        this.redBead1.anchor.setTo(0, 0.5);
-        this.redBead1.inputEnabled = true;
-        this.redBead1.input.enableDrag();
-        this.redBead1.input.allowVerticalDrag = false;
+        this.redBead1 = game.add.sprite(745, 50, 'red');
+        this.redBead1.directionRight = false;
+        this.beadPhysics(this.redBead1);
+        this.redBead1.events.onInputDown.add(this.clicked1, this);
 
-        
-        this.redBead2 = game.add.sprite(55, 50, 'red');
-        game.physics.enable(this.redBead2, Phaser.Physics.ARCADE);
-        this.redBead2.body.collideWorldBounds = true;
-        this.redBead2.anchor.setTo(0, 0.5);
-        this.redBead2.inputEnabled = true;
-        this.redBead2.input.enableDrag();
-        this.redBead2.input.allowVerticalDrag = false;
 
+        this.redBead6 = game.add.sprite(15, 50, 'yellow');
+        this.beadPhysics(this.redBead6);
+        this.redBead6.events.onInputDown.add(this.clicked6, this);
+
+    },
+
+    beadPhysics: function(bead){
+        game.physics.enable(bead, Phaser.Physics.ARCADE);
+        bead.body.collideWorldBounds = true;
+        bead.anchor.setTo(0, 0.5);
+        bead.inputEnabled = true;
+        bead.enableBody = true;
+        bead.body.immovable = true;
+        //this.redBead1.body.bounce.set(1);
 
     },
 
     //runs 60 times a second and is where the interactive stuff is
     update: function(){
 
-
-        game.physics.arcade.collide(
-            this.redBead1,
-            this.redBead2,
-            function(a, b) {
-                this._collided(
-                    a,
-                    b
-                );
-            },
-            null,
-            this
-        );
+        game.physics.arcade.collide(this.redBead1, this.redBead6, this.collided, null, this);
 
     },
 
-    _collided: function(a, b){
-        console.log('collision!!');
+    render: function(){
+        // game.debug.geom(this.left,'#0fffff');
+        // game.debug.geom(this.right,'#fff000');
+    },
 
-        if(a.body.touching.right == false){
-            console.log('a touching right');
+    collided: function(){
+        this.redBead1.body.velocity.x =0;
+        this.redBead6.body.velocity.x =0;
+
+    },
+
+    clicked1: function(){
+        if(this.redBead1.directionRight == true){
+            this.redBead1.body.velocity.x =100;
+            this.redBead1.directionRight = false;
+        }else{
+            this.redBead1.body.velocity.x =-100;
+            this.redBead1.directionRight = true;
         }
-        if(a.body.touching.right == true){
-            console.log('a touching right');
+
+    },
+
+    clicked6: function(){
+        if(this.redBead6.directionRight == false){
+            this.redBead6.body.velocity.x =100;
+            this.redBead6.directionRight = true;
+        }else{
+            this.redBead6.body.velocity.x =-100;
+            this.redBead6.directionRight = false;
         }
 
     },
@@ -78,10 +95,10 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'digital_abacus', {
         this.disableVisibilityChange = true;
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
-        this.scale.minWidth = 300;
-        this.scale.minHeight = 400;
-        this.scale.maxWidth = 1200;
-        this.scale.maxHeight = 900;
+        this.scale.minWidth = 800;
+        this.scale.minHeight = 600;
+        this.scale.maxWidth = 800;
+        this.scale.maxHeight = 600;
         this.scale.pageAlignHorizontally = true;
 
         if (game.device.desktop) {
